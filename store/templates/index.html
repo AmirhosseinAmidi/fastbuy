@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+<!-- Header-->
+<header class="bg-dark py-1">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">آنلاین خرید کنید</h1>
+            <br>
+            <p class="lead fw-normal text-white-50 mb-0">با خیال راحت</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+{% comment %}class=" p-3 shadow-sm border-bottom border-4 border-primary bg-light rounded-3 order-card" {% endcomment %}
+            <style>
+                .order-card {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .order-card:hover {
+                    transform: translateY(-5px) scale(1.03);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                    z-index: 5;
+                }
+            </style>
+
+            {% for item in product %}
+            <div class="col mb-5">
+                <div class="p-3 shadow-sm border-bottom border-5 border-secondary bg-light rounded-3 order-card">
+                    <!-- Product image-->
+                    <img class="card-img-top" src="{{item.image.url}}" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            {{item.category.name}}
+                            <br>
+                                
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">{{item.name}}</h5>
+                            <!-- Product price-->
+                            <span>{{ item.price|persian_price }} تومان</span>
+
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <style>
+                            .action-button {
+                                margin-left: 10px;
+                                transition: all 0.3s ease;
+                            }
+
+                            .action-button:hover {
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                                transform: translateY(-3px);
+                            }
+                        </style>
+                        <div class="d-flex justify-content-center">
+                            <a class="btn btn-outline-dark mt-auto action-button" href='{% url "product" item.id %}'>مشاهده جزئیات</a>
+
+                            <
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

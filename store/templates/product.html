@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block content %}
+<!-- product -->
+ <br><br>
+ <br><br>
+<div class="container">
+<div  class="p-3 shadow-sm border-bottom border-5 border-secondary bg-light rounded-3" >
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text"><small class="text-muted">{{ product.category }}</small></p>
+        توضیحات:
+        <p class="card-text">{{ product.description }}</p>
+        <h5 class="card-title">💰 قیمت:  {{ product.price|persian_price }} تومان </h5> 
+        <br>
+        <div class="row justify-content-right">
+          <div class="col-md-2"> تعداد: </div>
+            <div class="col-md-2">
+              <select class="form-select from-select-sm w-auto" id="qty-cart">
+                <option value="1">{{ 1|persian_price }}</option>
+                <option value="2">{{ 2|persian_price }}</option>
+                <option value="3">{{ 3|persian_price }}</option>
+                <option value="4">{{ 4|persian_price }}</option>
+                <option value="4">{{ 5|persian_price }}</option>
+                <option value="4">{{ 6|persian_price }}</option>
+              </select>
+            </div>
+          </div>
+          <br>
+        
+           <style>
+              .action-button {
+                margin-left: 10px;
+                transition: all 0.3s ease;
+              }
+
+              .action-button:hover {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                transform: translateY(-3px);
+              }
+            </style>
+            <div class="d-flex">
+              <button type="button" class="btn btn-primary action-button" id="add-cart" value="{{ product.id }}">
+                افزودن به سبد خرید
+              </button>
+              <a type="button" class="btn btn-secondary action-button" href="{% url 'home' %}">
+                برگشت به صفحه قبل
+              </a>
+
+              </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+                            <br>
+                            <br>
+                            <br>                         <br>
+                            <br>
+                            <br>
+
+                            <br>
+                            <br>
+                            <br>
+                         <br>
+                            <br>
+                            <br>
+
+<script>
+  function toPersianDigits(num) {
+    return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
+
+  $(document).on('click', '#add-cart', function(e){
+    e.preventDefault();
+ 
+    let productid = $(this).attr('data-product');
+
+    $.ajax({
+      type:'POST',
+      url:'{% url 'cart_add' %}',
+      data:{
+        product_id: $('#add-cart').val(),
+        product_qty: $('#qty-cart option:selected').text(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action : 'post'
+      }, 
+      success: function(json){
+        //console.log(json)
+        //document.getElementById('cart_quantity').textContent = json.qty
+        let persianQty = toPersianDigits(json.qty)
+        document.getElementById('cart_quantity').textContent = persianQty
+        location.reload();
+      },
+      error: function(xhr,errmsg,err){
+        
+      }
+    });
+  })
+</script>
+{% endblock %}
+

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% load multiply_tags  %}
+{% load custom_filters %}
+{% block content %}
+
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-2 px-lg-2 my-2">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">تایید نهایی</h1>
+            <p class="lead fw-normal text-white-50 mb-0">لطفا سفارشاتتون رو تایید نهایی کنید!</p>
+        </div>
+    </div>
+</header>
+<br><br>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">      
+            <div class="card text-center">
+                <div class="card-header">
+                    <h4 class="card-title">سفارش شما</h4>
+                </div>
+                <div class="p-4 bg-light rounded shadow-sm">
+                    {% for item in cart_products %}
+                            <p style="margin-bottom: 10px;">{{ forloop.counter }}-  نام: {{ item.name }} {% comment "" %}| دسته بندی: {{ item.category }}{% endcomment %} | قیمت: {{ item.price|persian_price }} | 
+                                 تعداد: 
+                            {% for key, value in quantities.items %}
+                                {% if key == item.id|slugify %}
+                                    {{ value | persian_price}} 
+                                        | مجموع: {{ value|multiply:item.price|persian_price }}
+
+                                {% endif %}
+                            {% endfor %}  
+                            </p>
+
+                            {% if not forloop.last %}
+                                <hr class="my-2">
+                            {% endif %}
+
+                    {% endfor %}
+            
+                    <hr class="mb-4">  
+                    <strong><p>مجموع سفارشات شما : {{ total | persian_price }} تومان</p></strong>
+
+                <style>
+                  .action-button {
+                    margin-left: 10px;
+                    transition: all 0.3s ease;
+                  }
+
+                  .action-button:hover {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                    transform: translateY(-3px);
+                  }
+                </style>
+                
+
+                </div>
+                </div>
+
+            <br>
+            <div class="card text">
+                <div class="card-header">
+                    <center><h4 class="card-title">مشخصات ارسال</h4></center>
+                </div>
+                <form method="POST" action={% url "process_order" %}>
+                    {% csrf_token %} 
+
+                <div class="p-4 bg-light rounded shadow-sm">
+                    <p><strong>نام و نام خانوادگی :</strong> {{ shipping_info.shipping_full_name }}</p>
+                    <p><strong>شماره تماس :</strong> {{ shipping_info.shipping_phone }}</p>
+                    <p><strong>کشور :</strong> {{ shipping_info.shipping_country }}</p>
+                    <p><strong>استان :</strong> {{ shipping_info.shipping_city }}</p>
+                    <p><strong>منطقه :</strong> {{ shipping_info.shipping_state }}</p>
+                    <p><strong>آدرس :</strong> {{ shipping_info.shipping_address }}</p>
+                    <p><strong>کد پستی :</strong> {{ shipping_info.shipping_zipcode }}</p>
+                    <p><strong>ایمیل :</strong> {{ shipping_info.shipping_email }}</p>
+                </div>
+                </div>
+                
+                <br>
+            <div class="card text-center">
+                <div class="card-header ">
+                    <div class="d-flex justify-content-center gap-3 p-2 ">
+                        <a type="button" class="btn btn-warning action-button btn-lg fs-5" href="{% url 'update_info' %}">
+                            <strong> برگشت به صورت حساب </strong>
+                        </a>
+                        <button type="submit" class="btn btn-success action-button btn-lg fs-5" >
+                            <strong> ثبت سفارش </strong>
+                        </button>
+                    </div>
+                    </div>
+                    </div>
+                    </form>
+
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

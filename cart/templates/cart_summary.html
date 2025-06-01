@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+{% load multiply_tags %}
+{% load custom_filters %}
+{% block content %}
+
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-2 px-lg-2 my-2">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">سبد خرید</h1>
+            <p class="lead fw-normal text-white-50 mb-0">مدیریت سبد خرید</p>
+        </div>
+    </div>
+</header>
+<br><br>
+{% if cart_products %}
+{% for item in cart_products %}
+<div class="container">
+<div class="p-3 shadow-sm border-bottom border-5 border-secondary bg-light rounded-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ item.image.url }}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ item.name }}</h5>
+        <p class="card-text"><small class="text-muted">{{ item.category }}</small></p>
+        <p class="card-text">{{ item.description }}</p>
+        <h5 class="card-title">💰 قیمت:  {{ item.price|persian_price }} تومان </h5> 
+        <br>
+                <div class="row justify-content-right">
+                    <div class="col-md-2"> تعداد: </div>
+            <div class="col-md-2">
+              {% comment %} <select class="form-select form-select-sm " id="select{{item.id}}">
+             
+                {% for key, value in quantities.items %}
+                    {% if key == item.id|slugify %}
+                    <option selected> {{ value | persian_price}}</option>
+                    {% endif %}
+               {% endfor %}
+                
+                <option value="1">{{ 1|persian_price }}</option>
+                <option value="2">{{ 2|persian_price }}</option>
+                <option value="3">{{ 3|persian_price }}</option>
+                <option value="4">{{ 4|persian_price }}</option>
+                <option value="5">{{ 5|persian_price }}</option>
+                <option value="6">{{ 6|persian_price }}</option>
+              </select> {% endcomment %}
+
+              <select class="form-select form-select-sm" id="select{{ item.id }}">
+                <option selected>{{ item.selected_quantity|persian_price }}</option>
+
+                {% for i in "123456"|make_list %}
+                    {% if i != item.selected_quantity|stringformat:"s" %}
+                        <option value="{{ i }}">{{ i|persian_price }}</option>
+                    {% endif %}
+                {% endfor %}
+              </select>
+     
+            </div>
+          </div>
+          <br><p><strong>مجموع : {{ item.total_price|persian_price }}</strong></p>
+
+              
+        <br>
+
+        <style>
+              .action-button {
+                margin-left: 10px;
+                transition: all 0.3s ease;
+              }
+
+              .action-button:hover {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                transform: translateY(-3px);
+              }
+            </style>
+
+            <div class="d-flex">
+              <a type="button" class="btn btn-secondary action-button" href="{% url 'home' %}">
+                برگشت به صفحه اصلی
+              </a>
+              <button type="button" class="btn btn-primary action-button update-cart" data-index="{{ item.id }}">
+                ویرایش
+              </button>
+              <button type="button" class="btn btn-danger action-button delete-cart" data-index="{{ item.id }}">
+                حذف
+              </button>
+            </div>
+
+
+        {% comment %} <button type="button" class="btn btn-secondary" value="{{ item.id }}" id='add-cart'>افزودن به سبد خرید</button>
+        <button type="button" data-index={{item.id}} class="btn btn-primary update-cart" > ویرایش </button>
+        <button type="button" data-index={{item.id}} class="btn btn-danger delete-cart" > حذف </button > {% endcomment %}
+
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<br>
+{% endfor %}
+<hr class="my-2">
+<br>
+
+<center><h3>مجموع سفارشات شما:{{ total | persian_price }} تومان</h3>
+<br>
+<a type="button" class="btn btn-success action-button" href="{% url 'checkout' %}">
+  صورت حساب
+</a>
+</center>
+
+{% else %}
+
+<center>
+    <h1 class="display-4 fw-bolder">سبد خرید شما خالی است</h1>
+</center>
+{% endif %}
+
+<script>
+  $(document).on('click', '.update-cart', function(e){
+    e.preventDefault();
+ 
+    var productid = $(this).data('index');
+    $.ajax({
+      type:'POST',
+      url:'{% url 'cart_update' %}',
+      data:{
+        product_id: $(this).data('index'),
+        product_qty: $('#select' + productid + ' option:selected').text(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action : 'post'
+      }, 
+      success: function(json){
+        //console.log(json)
+        //document.getElementById('cart_quantity').textContent = json.qty
+        //let persianQty = toPersianDigits(json.qty)
+        //document.getElementById('cart_quantity').textContent = persianQty
+        location.reload();
+      },
+      error: function(xhr,errmsg,err){
+        
+      }
+    });
+  })
+
+
+  $(document).on('click', '.delete-cart', function(e){
+    e.preventDefault();
+ 
+    $.ajax({
+      type:'POST',
+      url:'{% url 'cart_delete' %}',
+      data:{
+        product_id: $(this).data('index'),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        action : 'post'
+      }, 
+      success: function(json){
+        //console.log(json)
+        //document.getElementById('cart_quantity').textContent = json.qty
+        //let persianQty = toPersianDigits(json.qty)
+        //document.getElementById('cart_quantity').textContent = persianQty
+        location.reload();
+      },
+      error: function(xhr,errmsg,err){
+        
+      }
+    });
+  })
+
+</script>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder"> اطلاعات کاربری تکمیلی</h1>
+            <br>
+            <p class="lead fw-normal text-white-50 mb-0">وارد کردن اطلاعات بیشتر جهت سفارشات</p>
+        </div>
+    </div>
+</header>
+<!-- About Us-->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">        
+                        
+            <form method="POST" action="{% url 'update_info' %}" class="p-4 bg-light rounded card shadow-sm">
+                {% csrf_token %}
+                <div class="card-header border text-center">
+                    <h6 class="title">اطلاعات کاربری</h6>
+                </div>
+            <br>
+
+            {% for field in info_form %}
+                    <div class="mb-2">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                    </div>
+                    {% endfor %}
+                <br>
+                <br>
+                <br>
+                <br>
+
+                <div class="card-header border text-center">
+                    <h6 class="title">اطلاعات ارسال</h6>
+                </div>
+
+                {% comment %} <center><strong>اطلاعات ارسال</strong></center> {% endcomment %}
+                <br>
+                {% for field in shipping_form %}
+                    <div class="mb-2">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                    </div>
+                    {% endfor %}
+                    <br>
+            {% comment %} {{ shipping_form.as_p}} {% endcomment %}
+            {% comment %} <button type="submit" class="btn btn-primary">ثبت نام</a> {% endcomment %}
+            <button type="submit" class="btn btn-warning w-100">ثبت </button>
+
+        </form>    
+
+        
+      </div>
+    </div>
+</div>
+
+
+<br>
+{% endblock %}
+

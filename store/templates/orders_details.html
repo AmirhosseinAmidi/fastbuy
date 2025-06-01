@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="container my-5">
+
+    <style>
+        .order-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+    </style>
+
+    <!-- مشخصات سفارش -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border border-bottom border-dark mb-4">
+            {% comment %} <div class="card p-3 shadow border border-bottom border-4 border-dark mb-4"> {% endcomment %}
+                {% comment %} p-3 shadow border-bottom border-4 border-primary bg-light rounded-3 order-card {% endcomment %}
+                <div class="card-header bg-dark text-white text-center">
+                    <h4>جزئیات سفارش شماره {{ order.id | persian_numbers }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>نام سفارش‌دهنده : </strong> {{ order.full_name }}</p>
+                    <p><strong>ایمیل : </strong> {{ order.email }}</p>
+                    <p><strong>آدرس : </strong> {{ order.shipping_address | persian_numbers }}</p>
+                    <p><strong>وضعیت : </strong> {{ order.get_status_display }}</p>
+                    <p><strong>تاریخ ثبت : </strong> {{ order.date_ordered|date:"y-m-d h:i:s" | persian_numbers }}</p>
+                    <p><strong>آخرین بروزرسانی : </strong> {{ order.last_update|date:"y-m-d h:i:s"| persian_numbers }}</p>
+                    <p><strong>مبلغ پرداختی :  {{ order.amount_paid | persian_price }} تومان </strong></p>
+                
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <a href="{% url 'orders' %}" class="btn btn-outline-dark px-4 py-2 rounded-pill shadow fw-bold transition" style="transition: all 0.3s;">
+            <i class="bi bi-arrow-right-circle-fill me-2"></i>
+            بازگشت به لیست سفارش‌ها
+        </a>
+    </div>
+    </div>
+</div>
+<br>
+</div>
+        </div>
+    </div>
+
+
+    <!-- محصولات سفارش -->
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <div class="row justify-content-center">
+                <div class=" text-center ">
+                    <div class="p-3 shadow border-bottom border-3 border-primary bg-light rounded-3">
+                        <h4 class="fw-bold text-primary mb-1">
+                            <i class="bi bi-box-seam-fill me-2"></i> محصولات این سفارش
+                        </h4>
+                        <p class="text-muted small mb-0">لیست کامل محصولات سفارش داده شده توسط شما</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% for item in items %}
+            {% if items|length == 1 %}
+                <div class="col-md-6 col-lg-4 mx-auto mb-4">
+            {% else %}
+                <div class="col-md-6 col-lg-4 mb-4">
+            {% endif %}
+                    <div class="p-3 shadow border-bottom border-4 border-primary bg-light rounded-3 order-card">
+                        <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.product.name }}</h5>
+                            <br>
+                            <p class="card-text"><strong>دسته‌بندی : </strong> {{ item.product.category }}</p>
+                            <p class="card-text"><strong>تعداد : </strong> {{ item.quantity | persian_price}}</p>
+                            <p class="card-text"><strong>قیمت واحد : </strong> {{ item.price | persian_price }} تومان</p>
+                            <p class="card-text"><strong>قیمت کل :  {{ item.total_price | persian_price }} تومان</strong></p>
+                        </div>
+                    </div>
+                </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">محصولی در این سفارش ثبت نشده است.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <a href="{% url 'orders' %}" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow fw-bold transition" style="transition: all 0.3s;">
+            <i class="bi bi-arrow-right-circle-fill me-2"></i>
+            بازگشت به لیست سفارش‌ها
+        </a>
+    </div>
+</div>
+</div>
+
+
+
+{% endblock %}

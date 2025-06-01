@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block content %}
+
+<!-- About Us-->
+<div class="container"><br>
+    <div class="row"><br>
+        <center>
+        <div class="col-md"><br>
+                <div class="container mt-5 ">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border shadow-lg ">
+                                <div class="card-body text-center">
+                                    <h2 class="text-secondary fw-bold"> سفارشات جاری </h2>
+                                    <br>
+
+                                    <style>
+                                    .detail-button {
+                                        padding: 5px 12px;
+                                        font-size: 0.85rem;
+                                        font-weight: bold;
+                                        border-radius: 25px;
+                                        transition: all 0.3s ease-in-out;
+                                        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                                    }
+
+                                    .detail-button:hover {
+                                        transform: scale(1.05);
+                                        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                                    }
+
+                                    .detail-button i {
+                                        vertical-align: middle;
+                                        margin-left: 5px;
+                                    }
+                                    </style>
+
+
+                                    {% if other %}
+                                    <table class="table table-striped">
+                                        <thead> 
+                                            <tr>
+                                            <th class="table-secondary" scope="col">شماره سفارش</th>
+                                            <th class="table-secondary" scope="col">نام کاربر</th>
+                                            <th class="table-secondary" scope="col">تاریخ ثبت</th>
+                                            <th class="table-secondary" scope="col">وضعیت</th>
+                                            <th class="table-secondary" scope="col"><i class="bi bi-eye-fill"></i></th>
+                                            </tr>
+                                        </thead>
+                                        {% for item in other  %}
+                                        <tbody>
+                                            <tr>
+                                            <td>
+                                                <div class=" rounded text-center px-2 py-1 fw-bold text-secondary " style="min-width: 60px;">
+                                                    {{ item.id|persian_numbers }}
+                                                </div>
+                                            </td>
+                                            <td>{{ item.full_name }}</td>
+                                            <td>{{ item.date_ordered |date:"y-m-d h:i:s"| persian_numbers }}</td>
+                                            <td>{{ item.get_status_display }}</td>
+                                            <td>
+                                                <a href="{% url 'orders_details' item.id %}" class="btn btn-outline-secondary detail-button">
+                                                    <i class="bi bi-eye-fill"></i> مشاهده
+                                                </a>
+                                            </td>
+
+                                            </tr>
+                                            </tbody>
+                                        {% endfor %}
+                                    </table>
+                                    {% endif %}
+                                    </div>
+                                    </div>
+                                    <br>
+                                    <hr>
+                                    <br>
+                            <div class="card border shadow-lg">
+                                <div class="card-body text-center">
+                                    <h2 class="text-success fw-bold"> سفارشات تحویل شده </h2>
+                                    <br>
+                                    {% if delivered %}
+                                        <table class="table" style="background-color: #eaf7ea;">
+                                            <thead>
+                                            <tr> 
+                                            <th class="table-success" scope="col">شماره سفارش</th>
+                                            <th class="table-success" scope="col">نام کاربر</th>
+                                            <th class="table-success" scope="col">تاریخ ثبت</th>
+                                            <th class="table-success" scope="col">وضعیت</th>
+                                            <th class="table-success" scope="col"><i class="bi bi-eye-fill"></i></th>
+
+                                            </tr>
+                                        </thead>
+                                        {% for item in delivered  %}
+                                        <tbody>
+                                            <tr>
+                                            <td>
+                                                <div class=" rounded text-center px-2 py-1 fw-bold text-success " style="min-width: 60px;">
+                                                    {{ item.id|persian_numbers }}
+                                                </div>
+                                            </td>
+                                            <td>{{ item.full_name }}</td>
+                                            <td>{{ item.last_update |date:"y-m-d h:i:s"| persian_numbers }}</td>
+                                            <td >{{ item.get_status_display }}</td>
+                                            <td>
+                                                <a href="{% url 'orders_details' item.id %}" class="btn btn-outline-success detail-button">
+                                                    <i class="bi bi-eye-fill"></i> مشاهده
+                                                </a>
+                                            </td>
+                                            </tr>
+                                            </tbody>
+                                        {% endfor %}
+                                    </table>
+                                    {% endif %}
+
+                            </div>
+                            </div>
+                </div>
+
+        </div>  
+        <center>      
+    </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
